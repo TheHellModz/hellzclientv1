@@ -28,6 +28,9 @@ using TMPro;
 using System.Reflection;
 using static Fusion.Sockets.NetBitBuffer;
 using System.Collections;
+using System.Diagnostics;
+using UnityEngine.TextCore.Text;
+using static Mono.Security.X509.X520;
 
 namespace HellzClient.Menu
 {
@@ -97,7 +100,6 @@ namespace HellzClient.Menu
             pollerInstance = ControllerInputPoller.instance;
             thirdPersonCamera = GameObject.Find("Player Objects/Third Person Camera/Shoulder Camera");
             cm = GameObject.Find("Player Objects/Third Person Camera/Shoulder Camera/CM vcam1");
-            StartCoroutine(TextColorsChanging());
         }
 
         public static void HandleMenuInteraction()
@@ -247,6 +249,32 @@ namespace HellzClient.Menu
 
         public static void joinDCBtn()
         {
+            discordBtn = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Destroy(discordBtn.GetComponent<BoxCollider>());
+            Destroy(discordBtn.GetComponent<Rigidbody>());
+            discordBtn.GetComponent<MeshRenderer>().material.color = Black;
+            discordBtn.transform.parent = menuObj.transform;
+            discordBtn.transform.rotation = Quaternion.identity;
+            discordBtn.transform.localScale = new Vector3(0.003f, 0.13f, 0.1f);
+            discordBtn.name = "discordButton";
+            discordBtn.transform.position = new Vector3(0.05f, -0.12f, 0.14f);
+
+            CreateBorder(discordBtn, RedTransparent);
+
+            Text dcText = new GameObject { transform = { parent = canvasObj.transform } }.AddComponent<Text>();
+            dcText.text = "🌐";
+            dcText.font = ResourceLoader.ArialFont;
+            dcText.fontStyle = FontStyle.Normal;
+            dcText.fontSize = 3;
+            dcText.color = Blue;
+            dcText.alignment = TextAnchor.MiddleCenter;
+            dcText.resizeTextForBestFit = true;
+            dcText.resizeTextMinSize = 0;
+            RectTransform rectt = dcText.GetComponent<RectTransform>();
+            rectt.sizeDelta = new Vector2(0.2f, 0.02f);
+            rectt.localPosition = new Vector3(0.05f, -0.2f, 0.2f);
+            rectt.localScale = new Vector3(0.9f, 0.9f, 0.9f);
+            rectt.rotation = Quaternion.Euler(new Vector3(180f, 90f, 90f));
 
         }
 
@@ -256,18 +284,18 @@ namespace HellzClient.Menu
             while (true)
             {
                 string text = "";
-                for (int i = 0; i < menuName.Length; i++)
+                for (int i = 0; i < text.Length; i++)
                 {
                     if (i == current)
                     {
-                        text += $"<color=white>{menuName[i]}</color>";
+                        text += $"<color=white>{text[i]}</color>";
                     }
                     else
                     {
-                        text += $"<color=red>{menuName[i]}</color>";
+                        text += $"<color=red>{text[i]}</color>";
                     }
                 }
-                current = (current + 1) & menuName.Length;
+                current = (current + 1) & text.Length;
                 yield return new WaitForSeconds(5f);
             }
         }
@@ -326,9 +354,9 @@ namespace HellzClient.Menu
             title = titleObj.AddComponent<Text>();
             title.font = ResourceLoader.ArialFont;
             title.fontStyle = FontStyle.Normal;
-            title.text = $"{menuName} v{menuVersion}";
             title.color = White;
             title.fontSize = 5;
+            title.text = menuName;
             title.alignment = TextAnchor.MiddleCenter;
             title.resizeTextForBestFit = true;
             title.resizeTextMinSize = 0;
