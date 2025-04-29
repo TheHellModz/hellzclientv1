@@ -6,6 +6,7 @@ using System.IO;
 using static HellzClient.Utilities.NotificationLib;
 using static HellzClient.Utilities.Variables;
 using static HellzClient.Menu.Main;
+using static HellzClient.Menu.RPCProtection;
 using HellzClient.Utilities;
 using System.Diagnostics;
 using Valve.VR;
@@ -20,6 +21,7 @@ using Fusion;
 using UnityEngine.XR;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
+using HellzClient.Menu;
 
 namespace HellzClient.Mods.Categories
 {
@@ -35,6 +37,34 @@ namespace HellzClient.Mods.Categories
         public static void Disconnect()
         {
             PhotonNetwork.Disconnect();
+        }
+
+        public static void ReportAll()
+        {
+            if (pollerInstance.rightControllerIndexFloat > 0.5 || Mouse.current.rightButton.isPressed)
+            {
+                GorillaPlayerScoreboardLine[] ScoreBoardLine = UnityEngine.Object.FindObjectsOfType<GorillaPlayerScoreboardLine>();
+                foreach (GorillaPlayerScoreboardLine gpsl in ScoreBoardLine)
+                {
+                    gpsl.PressButton(true, GorillaPlayerLineButton.ButtonType.Report);
+                    gpsl.reportButton.isOn = true;
+                    RPCProtectionMethod();
+                }
+            }
+        }
+
+        public static void MuteAll()
+        {
+            if (pollerInstance.rightControllerIndexFloat > 0.5 || Mouse.current.rightButton.isPressed)
+            {
+                GorillaPlayerScoreboardLine[] ScoreBoardLine = UnityEngine.Object.FindObjectsOfType<GorillaPlayerScoreboardLine>();
+                foreach (GorillaPlayerScoreboardLine gpsl in ScoreBoardLine)
+                {
+                    gpsl.PressButton(true, GorillaPlayerLineButton.ButtonType.Mute);
+                    gpsl.muteButton.isOn = true;
+                    RPCProtectionMethod();
+                }
+            }    
         }
 
         public static void JoinRandomPublic()
@@ -71,6 +101,29 @@ namespace HellzClient.Mods.Categories
             }
 
             PhotonNetworkController.Instance.AttemptToJoinPublicRoom(joinTrigger, JoinType.Solo);
+        }
+
+        public static void GetIds()
+        {
+            if (pollerInstance.rightControllerIndexFloat > 0.5)
+            {
+                string text = "";
+                foreach (Photon.Realtime.Player player in PhotonNetwork.PlayerList)
+                {
+                    text = string.Concat(new string[]
+                    {
+                    text,
+                    "Room Name: ",
+                    PhotonNetwork.CurrentRoom.Name.ToString(),
+                    text,
+                    "Player Name: ",
+                    player.NickName + "", player.DefaultName,
+                    text,
+                    "Player ID: ",
+                    player.UserId,
+                    });
+                }
+            }
         }
 
         public override void OnJoinRoomFailed(short returnCode, string message)

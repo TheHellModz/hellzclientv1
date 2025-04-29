@@ -42,7 +42,21 @@ namespace HellzClient.Mods.Categories
             toggledisconnectButton = setActive;
         }
 
+        public static void ToggleOutline(bool setActive)
+        {
+            togglemenuOutline = setActive;
+        }
 
+        public  static void ToggleFunMods(bool setActive)
+        {
+            toggledfunbutton = setActive;
+        }
+
+        public static void ToggleSideButtons(bool setActive)
+        {
+            togglediscButton = setActive;
+            toggledpanicButton = setActive;
+        }
 
 
 

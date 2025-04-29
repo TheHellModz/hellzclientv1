@@ -159,7 +159,7 @@ namespace HellzClient.Menu
                     clickCooldown = Time.frameCount;
 
                     taggerInstance.StartVibration(rightHandedMenu, taggerInstance.tagHapticStrength / 2, taggerInstance.tagHapticDuration / 2);
-                    taggerInstance.offlineVRRig.PlayHandTapLocal(67, rightHandedMenu, 1);
+                    taggerInstance.offlineVRRig.PlayHandTapLocal(67, rightHandedMenu, 66);
                     GetComponent<BoxCollider>().enabled = true;
 
                     Toggle(clickedButton);

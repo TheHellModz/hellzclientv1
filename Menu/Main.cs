@@ -1,4 +1,4 @@
-using HellzClient.Mods;
+﻿using HellzClient.Mods;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -13,24 +13,7 @@ using UnityEngine.InputSystem;
 using HarmonyLib;
 using static HellzClient.Initialization.PluginInfo;
 using HellzClient.Utilities;
-using System.IO;
-using g3;
-using Valve.VR;
-using UnityEngine.Animations.Rigging;
-using Photon.Pun;
-using UnityEngine.ProBuilder.MeshOperations;
-using GorillaNetworking;
-using System.Net;
-using System.Threading;
-using HellzClient.Mods.Categories;
-using GorillaExtensions;
-using TMPro;
-using System.Reflection;
-using static Fusion.Sockets.NetBitBuffer;
 using System.Collections;
-using System.Diagnostics;
-using UnityEngine.TextCore.Text;
-using static Mono.Security.X509.X520;
 
 namespace HellzClient.Menu
 {
@@ -205,6 +188,9 @@ namespace HellzClient.Menu
             CreateMenuObject();
             CreateBackground();
             CreateMenuCanvasAndTitle();
+            JoinDC();
+            PanickBtn();
+            FunButton();
             AddDisconnectButton();
             AddReturnButton();
             AddPageButton(">");
@@ -240,42 +226,44 @@ namespace HellzClient.Menu
             background.GetComponent<MeshRenderer>().material.color = Black;
             background.transform.parent = menuObj.transform;
             background.transform.rotation = Quaternion.identity;
-            background.transform.localScale = new Vector3(0.01f, 0.925f, 0.90f);
+            background.transform.localScale = new Vector3(0.07f, 0.925f, 0.90f);
             background.name = "menucolor";
             background.transform.position = new Vector3(0.05f, 0, 0.025f);
 
             CreateBorder(background, RedTransparent);
         }
 
-        public static void joinDCBtn()
+        public static void JoinDC()
         {
-            discordBtn = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Destroy(discordBtn.GetComponent<BoxCollider>());
-            Destroy(discordBtn.GetComponent<Rigidbody>());
-            discordBtn.GetComponent<MeshRenderer>().material.color = Black;
-            discordBtn.transform.parent = menuObj.transform;
-            discordBtn.transform.rotation = Quaternion.identity;
-            discordBtn.transform.localScale = new Vector3(0.003f, 0.13f, 0.1f);
-            discordBtn.name = "discordButton";
-            discordBtn.transform.position = new Vector3(0.05f, -0.12f, 0.14f);
+            if (togglediscButton)
+            {
+                // Disconnect Button
+                discordBtn = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                Destroy(discordBtn.GetComponent<Rigidbody>());
+                discordBtn.GetComponent<BoxCollider>().isTrigger = true;
+                discordBtn.transform.parent = menuObj.transform;
+                discordBtn.transform.rotation = Quaternion.identity;
+                discordBtn.transform.localScale = new Vector3(0.0001f, 0.1f, 0.0675f);
+                discordBtn.transform.localPosition = new Vector3(.55f, -0.55f, 0.5f);
+                discordBtn.AddComponent<BtnCollider>().clickedButton = new ButtonHandler.Button("DiscordBtn", Category.Home, false, false, null, null);
+                discordBtn.GetComponent<Renderer>().material = ImageFromUrl("https://cdn.discordapp.com/attachments/1323383095528915008/1365183019928784976/output-onlinepngtools.png?ex=680fad03&is=680e5b83&hm=3395141ce5a3443cbbef7c0ec9c02a915bd1ac8e9e32dba058081260e7665864&");
+            }
+        }
 
-            CreateBorder(discordBtn, RedTransparent);
-
-            Text dcText = new GameObject { transform = { parent = canvasObj.transform } }.AddComponent<Text>();
-            dcText.text = "🌐";
-            dcText.font = ResourceLoader.ArialFont;
-            dcText.fontStyle = FontStyle.Normal;
-            dcText.fontSize = 3;
-            dcText.color = Blue;
-            dcText.alignment = TextAnchor.MiddleCenter;
-            dcText.resizeTextForBestFit = true;
-            dcText.resizeTextMinSize = 0;
-            RectTransform rectt = dcText.GetComponent<RectTransform>();
-            rectt.sizeDelta = new Vector2(0.2f, 0.02f);
-            rectt.localPosition = new Vector3(0.05f, -0.2f, 0.2f);
-            rectt.localScale = new Vector3(0.9f, 0.9f, 0.9f);
-            rectt.rotation = Quaternion.Euler(new Vector3(180f, 90f, 90f));
-
+        public static void PanickBtn()
+        {
+            if (toggledpanicButton)
+            {
+                panicBtn = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                Destroy(panicBtn.GetComponent<Rigidbody>());
+                panicBtn.GetComponent<BoxCollider>().isTrigger = true;
+                panicBtn.transform.parent = menuObj.transform;
+                panicBtn.transform.rotation = Quaternion.identity;
+                panicBtn.transform.localScale = new Vector3(0.0001f, 0.1f, 0.0675f);
+                panicBtn.transform.localPosition = new Vector3(0.55f, -0.55f, 0.4f);
+                panicBtn.AddComponent<BtnCollider>().clickedButton = new ButtonHandler.Button("DiscordBtn", Category.Home, false, false, null, null);
+                panicBtn.GetComponent<Renderer>().material = ImageFromUrl("https://cdn.discordapp.com/attachments/1323383095528915008/1366235059165855744/download__1_-removebg-preview.png?ex=6810350d&is=680ee38d&hm=422f86240d8f04962b4aba0d9cb99deeb29e8c84aac8298da4c60559ba1e635f&");
+            }
         }
 
         public int current = 0;
@@ -300,6 +288,41 @@ namespace HellzClient.Menu
             }
         }
 
+        public static void FunButton()
+        {
+            if (toggledfunbutton)
+            {
+                // Fun Button
+                funBtnMods1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                Destroy(funBtnMods1.GetComponent<Rigidbody>());
+                funBtnMods1.GetComponent<BoxCollider>().isTrigger = true;
+                funBtnMods1.transform.parent = menuObj.transform;
+                funBtnMods1.transform.rotation = Quaternion.identity;
+                funBtnMods1.transform.localScale = new Vector3(0.07f, 0.8975f, 0.0575f);
+                funBtnMods1.transform.localPosition = new Vector3(0.5f, 0f, -0.43f);
+                funBtnMods1.AddComponent<BtnCollider>().clickedButton = new ButtonHandler.Button("FunButton", Category.Home, false, false, () => ChangePage(Category.Fun), null);
+                funBtnMods1.GetComponent<Renderer>().material.color = Black;
+
+                // Fun Button Text
+                Text funText = new GameObject { transform = { parent = canvasObj.transform } }.AddComponent<Text>();
+                funText.text = "Fun Mods";
+                funText.font = ResourceLoader.ArialFont;
+                funText.fontStyle = FontStyle.Normal;
+                funText.fontSize = 3;
+                funText.color = White;
+                funText.alignment = TextAnchor.MiddleCenter;
+                funText.resizeTextForBestFit = true;
+                funText.resizeTextMinSize = 0;
+                RectTransform rectt = funText.GetComponent<RectTransform>();
+                rectt.sizeDelta = new Vector2(0.2f, 0.02f);
+                rectt.localPosition = new Vector3(0.0539f, 0f, -0.13f);
+                rectt.localScale = new Vector3(0.9f, 0.9f, 0.9f);
+                rectt.rotation = Quaternion.Euler(new Vector3(180f, 90f, 90f));
+
+                CreateBorder(funBtnMods1, RedTransparent);
+            }
+        }
+
         public static void AddDisconnectButton()
         {
             if (toggledisconnectButton)
@@ -310,10 +333,10 @@ namespace HellzClient.Menu
                 disconnectButton.GetComponent<BoxCollider>().isTrigger = true;
                 disconnectButton.transform.parent = menuObj.transform;
                 disconnectButton.transform.rotation = Quaternion.identity;
-                disconnectButton.transform.localScale = new Vector3(0.005f, 0.8975f, 0.0575f);
+                disconnectButton.transform.localScale = new Vector3(0.07f, 0.8975f, 0.0575f);
                 disconnectButton.transform.localPosition = new Vector3(0.5f, 0f, 0.6f);
                 disconnectButton.AddComponent<BtnCollider>().clickedButton = new ButtonHandler.Button("DisconnectButton", Category.Home, false, false, null, null);
-                disconnectButton.GetComponent<Renderer>().material.color = Blue;
+                disconnectButton.GetComponent<Renderer>().material.color = Black;
 
                 // Disconnect Button Text
                 Text discontext = new GameObject { transform = { parent = canvasObj.transform } }.AddComponent<Text>();
@@ -327,7 +350,7 @@ namespace HellzClient.Menu
                 discontext.resizeTextMinSize = 0;
                 RectTransform rectt = discontext.GetComponent<RectTransform>();
                 rectt.sizeDelta = new Vector2(0.2f, 0.02f);
-                rectt.localPosition = new Vector3(0.051f, 0f, 0.18f);
+                rectt.localPosition = new Vector3(0.0539f, 0f, 0.18f);
                 rectt.localScale = new Vector3(0.9f, 0.9f, 0.9f);
                 rectt.rotation = Quaternion.Euler(new Vector3(180f, 90f, 90f));
 
@@ -362,7 +385,7 @@ namespace HellzClient.Menu
             title.resizeTextMinSize = 0;
             RectTransform titleTransform = title.GetComponent<RectTransform>();
             titleTransform.localPosition = Vector3.zero;
-            titleTransform.position = new Vector3(0.051f, 0f, 0.135f);
+            titleTransform.position = new Vector3(0.0539f, 0f, 0.135f);
             titleTransform.rotation = Quaternion.Euler(new Vector3(180f, 90f, 90f));
             titleTransform.sizeDelta = new Vector2(0.19f, 0.04f);
         }
@@ -385,7 +408,7 @@ namespace HellzClient.Menu
             ModButton.transform.SetParent(menuObj.transform, false);
             ModButton.transform.rotation = Quaternion.identity;
             ModButton.transform.localScale = new Vector3(0.005f, 0.82f, 0.08f);
-            ModButton.transform.localPosition = new Vector3(0.505f, 0f, 0.3250f - offset);
+            ModButton.transform.localPosition = new Vector3(0.55f, 0f, 0.3250f - offset);
             BtnCollider btnColScript = ModButton.GetComponent<BtnCollider>() ?? ModButton.AddComponent<BtnCollider>();
             btnColScript.clickedButton = button;
 
@@ -399,10 +422,9 @@ namespace HellzClient.Menu
             title.fontStyle = FontStyle.Normal;
             title.color = White;
             RectTransform titleTransform = title.GetComponent<RectTransform>();
-            titleTransform.localPosition = new Vector3(0.051f, 0f, 0.0975f - offset / 3.35f);
+            titleTransform.localPosition = new Vector3(0.056f, 0f, 0.0975f - offset / 3.35f);
             titleTransform.rotation = Quaternion.Euler(new Vector3(180f, 90f, 90f));
-            titleTransform.sizeDelta = new Vector2(0.16f, 0.01725f);
-
+            titleTransform.sizeDelta = new Vector2(0.2f, 0.015f);
 
             Renderer btnRenderer = ModButton.GetComponent<Renderer>();
             if (btnRenderer != null)
@@ -413,7 +435,7 @@ namespace HellzClient.Menu
                 }
                 else
                 {
-                    btnRenderer.material.color = Black;
+                    btnRenderer.material.color = Red;
                 }
             }
         }
@@ -448,7 +470,7 @@ namespace HellzClient.Menu
             titleTransform.sizeDelta = new Vector2(0.2f, 0.03f);
             title.text = button.Contains("<") ? "<" : ">";
             titleTransform.rotation = Quaternion.Euler(new Vector3(180f, 90f, 90f));
-            titleTransform.position = new Vector3(0.051f, button.Contains("<") ? 0.059f : -0.059f, -0.0935f);
+            titleTransform.position = new Vector3(0.0539f, button.Contains("<") ? 0.059f : -0.059f, -0.0935f);
         }
 
         public static void AddReturnButton()
@@ -481,7 +503,7 @@ namespace HellzClient.Menu
             RectTransform titleTransform = title.GetComponent<RectTransform>();
             titleTransform.localPosition = Vector3.zero;
             titleTransform.sizeDelta = new Vector2(0.2f, 0.02f);
-            titleTransform.localPosition = new Vector3(0.051f, 0f, -0.0935f);
+            titleTransform.localPosition = new Vector3(0.0539f, 0f, -0.0935f);
             titleTransform.rotation = Quaternion.Euler(new Vector3(180f, 90f, 90f));
         }
 
@@ -518,23 +540,21 @@ namespace HellzClient.Menu
 
         public static void CreateBorder(GameObject obj, Color color)
         {
-            float outlineWidth = obj.transform.localScale.x - 0.0025f;
-            float outlineHeight = obj.transform.localScale.y + 0.0275f;
-            float outlineDepth = obj.transform.localScale.z + 0.0275f;
-            GameObject outlineobj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Destroy(outlineobj.GetComponent<Rigidbody>());
-            Destroy(outlineobj.GetComponent<BoxCollider>());
-            outlineobj.transform.parent = menuObj.transform;
-            outlineobj.transform.rotation = obj.transform.rotation;
-            outlineobj.transform.localScale = new Vector3(outlineWidth, outlineHeight, outlineDepth);
-            outlineobj.transform.position = obj.transform.position;
-            outlineobj.GetComponent<Renderer>().material.color = color;
-        }
-
-        private static void PositionMenuForHandv2() // need to make but dont have a vr rn
-        {
-            menuObj.transform.position = playerInstance.headCollider.transform.position + new Vector3();
-            menuObj.transform.rotation = Quaternion.Euler(0, 0, 0);
+            if (togglemenuOutline)
+            {
+                float outlineWidth = obj.transform.localScale.x - 0.0025f;
+                float outlineHeight = obj.transform.localScale.y + 0.0275f;
+                float outlineDepth = obj.transform.localScale.z + 0.0275f;
+                GameObject outlineobj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                Destroy(outlineobj.GetComponent<Rigidbody>());
+                Destroy(outlineobj.GetComponent<BoxCollider>());
+                outlineobj.transform.parent = menuObj.transform;
+                outlineobj.transform.rotation = obj.transform.rotation;
+                outlineobj.transform.localScale = new Vector3(outlineWidth, outlineHeight, outlineDepth);
+                outlineobj.transform.position = obj.transform.position;
+                outlineobj.GetComponent<Renderer>().material.shader = Shader.Find("UI/Default");
+                outlineobj.GetComponent<Renderer>().material.color = color;
+            }
         }
 
         private static void PositionMenuForHand()
@@ -550,21 +570,6 @@ namespace HellzClient.Menu
             {
                 menuObj.transform.position = playerInstance.leftControllerTransform.position;
                 menuObj.transform.rotation = playerInstance.leftControllerTransform.rotation;
-            }
-        }
-
-        public static void PosForMenuInfront()
-        {
-            if (V2Menu)
-            {
-                menuObj.transform.position = playerInstance.headCollider.transform.position + new Vector3(0.1f, 0.1f, 0.1f);
-            }
-            else
-            {
-                menuObj.transform.position = playerInstance.rightControllerTransform.position;
-                Vector3 rotation = playerInstance.rightControllerTransform.rotation.eulerAngles;
-                rotation += new Vector3(0f, 0f, 180f);
-                menuObj.transform.rotation = Quaternion.Euler(rotation);
             }
         }
 

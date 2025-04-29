@@ -2,8 +2,11 @@
 using System;
 using UnityEngine;
 using static HellzClient.Menu.Optimizations;
+using static HellzClient.Menu.ButtonHandler;
 using UnityEngine.Networking;
 using System.Collections;
+using UnityEngine.UI;
+using HellzClient.Menu;
 
 namespace HellzClient.Utilities
 {
@@ -12,7 +15,7 @@ namespace HellzClient.Utilities
         #region Non-Transparent Colors
 
         // Reds
-        public static Color32 Red = new Color32(255, 0, 0, 255);
+        public static Color32 Red = new Color32(250, 51, 51, 255);
         public static Color32 DarkRed = new Color32(180, 0, 0, 255);
         public static Color32 Salmon = new Color32(250, 128, 114, 255);
         public static Color32 WineRed = new Color32(123, 0, 0, 255);
@@ -112,7 +115,7 @@ namespace HellzClient.Utilities
         #region Transparent Colors
 
         // Reds
-        public static Color32 RedTransparent = new Color32(255, 0, 0, 80);
+        public static Color32 RedTransparent = new Color32(250, 51, 51, 80);
         public static Color32 DarkRedTransparent = new Color32(180, 0, 0, 80);
         public static Color32 SalmonTransparent = new Color32(250, 128, 114, 80);
         public static Color32 IndianRedTransparent = new Color32(205, 92, 92, 80);
@@ -210,16 +213,55 @@ namespace HellzClient.Utilities
         public static Color32 DarkerGreyTransparent = new Color32(40, 40, 40, 80);
         #endregion
 
+        public static Material ImageFromUrl(string url)
+        {
+            try
+            {
+                using WebClient client = new WebClient();
+                byte[] imageData = client.DownloadData(url);
+                Texture2D texture = new Texture2D(2, 2);
+                texture.LoadImage(imageData);
+                texture.Apply();
 
+                Shader shader = Shader.Find("UI/Default");
+                if (shader == null)
+                {
+                    Debug.LogError("Failed to find Standard Shader.");
+                    return null;
+                }
+
+                Material material = new Material(shader)
+                {
+                    mainTexture = texture
+                };
+
+                material.SetFloat("_Mode", 3);
+                material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                material.SetInt("_ZWrite", 0);
+                material.DisableKeyword("_ALPHATEST_ON");
+                material.EnableKeyword("_ALPHABLEND_ON");
+                material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                material.renderQueue = 3000;
+
+                return material;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to load image from URL: {url}. Error: {ex.Message}");
+                return null;
+            }
+        }
+
+        public static ButtonHandler.Button themeChangerButton;
         public static int CurrentTheme = 0;
         public static Color32[] ThemeArraya = new Color32[]
         {
-            new Color32(0, 0, 200, 255),    // Blue
-            new Color32(0, 0, 0, 255),     // Black
-            new Color32(123, 3, 200, 255), // Purple
-            new Color32(0, 100, 0, 255),   // Green
-            new Color32(200, 0, 0, 255),   // Red
-            new Color32(200, 60, 0, 255),  // Orange
+            RedTransparent,
+            BlackTransparent,
+            PurpleTransparent,
+            GreenTransparent,
+            BlueTransparent,
         };
     }
 }

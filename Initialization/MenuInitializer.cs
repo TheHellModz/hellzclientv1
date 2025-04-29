@@ -28,6 +28,7 @@ namespace HellzClient.Initialization
                 menuObject.AddComponent<NotificationLib>();
                 GameObject.DontDestroyOnLoad(menuObject);
                 Debug.Log($"{PluginInfo.menuName} successfully initialized.");
+                Debug.Log($"Thanks for using the menu, we love you all ❤️❤️");
             }
             catch (Exception ex)
             {

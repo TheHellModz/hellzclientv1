@@ -13,49 +13,57 @@ namespace HellzClient.Utilities
 {
     public class Variables : MonoBehaviourPunCallbacks
     {
+
+        // -- Obby Variables --
+        public static bool toggledObby = false;
+        public static GameObject obbyBlock1 = null;
+
+
         // --- UI Variables ---
         public static GameObject menuObj = null;
         public static GameObject background = null;
+        public static GameObject discordBtn = null;
+        public static GameObject panicBtn = null;
+        public static GameObject disBtnBorder = null;
+        public static GameObject sidebarBtn = null;
         public static GameObject border = null;
         public static GameObject canvasObj = null;
         public static GameObject clickerObj = null;
         public static GameObject disconnectButton = null;
         public static Text title;
-
-
-
-        // -- V2 UI VARIABLES -- //
-        public static bool V2Menu = false;
-        public static GameObject menuObjV2 = null;
-        public static GameObject backgroundV2 = null;
-        public static GameObject canvasObjV2 = null;
-        public static GameObject clickerObjV2 = null;
-        public static Text titleV2;
+        public static GameObject funBtnMods1 = null;
 
         // --- UI Colors ---
-        public static Color32 BackgroundColor = Red;
-        public static Color32 BorderColor1 = Black;
+        public static Color32 BackgroundColor = Blue;
         public static Color32 BackToStartButtonColor = Black;
         public static Color32 PageButtonsColor = Black;
-        public static Color32 ModEnabledColor = new Color32(13, 13, 13, 255);
+        public static Color32 ModEnabledColor = RedOrangeTransparent;
         public static Color32 ModDisabledColor = Black;
-        public static Color32 ClickerColor = White;
+        public static Color32 ClickerColor = Red;
         public static Color32 TitleTextColor = White;
         public static Color32 ModsTextColor = White;
         public static Color32 DisconnectButtonTextColor = White;
         public static Color32 BackToStartTextColor = White;
         public static Color32 PageButtonsTextColor = White;
 
+
         // --- Menu and Interaction Settings ---
         public static Category currentPage = Category.Home;
         public static int currentCategoryPage = 0;
-        public static int ButtonsPerPage = 9;
+        public static int ButtonsPerPage = 6;
         public static bool toggledisconnectButton = true;
+        public static bool toggledsideBar = true;
+        public static bool togglediscButton = true;
+        public static bool toggledpanicButton = true;
+        public static bool toggledfunbutton = true;
+        public static bool togglemenuOutline = true;
         public static bool rightHandedMenu = false;
         public static bool toggleNotifications = true;
         public static bool PCMenuOpen = false;
         public static KeyCode PCMenuKey = KeyCode.LeftAlt;
+        public static KeyCode TPKey = KeyCode.F;
         public static bool openMenu;
+        public static bool V2Menu = false;
         public static bool menuOpen = false;
         public static bool InMenuCondition;
         public static bool InPcCondition;
